@@ -199,7 +199,7 @@ const CandidateLogin: React.FC = () => {
                 className="btn btn-link text-decoration-none text-secondary"
                 onClick={() => navigate("/")}
               >
-                ← Back to Home
+                <i className="fa-solid fa-arrow-left"></i> Back to Home
               </button>
             </div>
           </div>
