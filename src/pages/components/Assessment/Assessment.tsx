@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef  } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAllQuestions, getTimer, submitCandidateAttempt } from "../../../services/attemptService";
 import { showAlert } from "../../../utils/alerts";
@@ -15,7 +15,7 @@ interface Question {
 const Assessment: React.FC = () => {
   const navigate = useNavigate();
   const { attemptId } = useParams<{ attemptId: string }>();
-
+const answersRef = useRef<{ [key: string]: string }>({});
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<{ [key: string]: string }>({});
   const [remainingTime, setRemainingTime] = useState<number>(0);
@@ -40,7 +40,21 @@ const Assessment: React.FC = () => {
     };
   }, []);
 
+useEffect(() => {
+  const checkAttemptStatus = async () => {
+    try {
+      const response = await getTimer(attemptId!);
 
+      if (response?.data?.status === "submitted") {
+        navigate("/candidate/already_submitted", { replace: true });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  checkAttemptStatus();
+}, []);
 
   // ================= fetch question =================
   const candidateQuestions = async () => {
@@ -77,22 +91,28 @@ const Assessment: React.FC = () => {
 
   // ================= timer interval =================
   useEffect(() => {
-    candidateQuestions();
-    candidateTimer();
+  answersRef.current = answers;
+}, [answers]);
 
-    const interval = setInterval(() => {
-      setRemainingTime((prev) => {
-        if (prev <= 1) {
-          // Auto submit
-          handleSubmit();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+ useEffect(() => {
+  candidateQuestions();
+  candidateTimer();
 
-    return () => clearInterval(interval);
-  }, []);
+  const interval = setInterval(() => {
+    setRemainingTime((prev) => {
+      if (prev <= 1) {
+        clearInterval(interval);
+        // Auto submit when time is up
+        handleSubmit();
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, []);
+
 
   // ================= handel asw =================
   const handleOptionChange = (questionId: string, value: string) => {
@@ -102,10 +122,10 @@ const Assessment: React.FC = () => {
   // ================= handel submit =================
   const handleSubmit = async () => {
     try {
-      const formattedAnswers = Object.keys(answers).map((key) => ({
-        questionId: key,
-        selectedOption: answers[key],
-      }));
+      const formattedAnswers = Object.keys(answersRef.current).map((key) => ({
+      questionId: key,
+      selectedOption: answersRef.current[key],
+    }));
       setLoading(true);
       const response = await submitCandidateAttempt(attemptId!, {
         answers: formattedAnswers,

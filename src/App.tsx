@@ -31,6 +31,9 @@ const AssessmentQuestion = React.lazy(
 const Result = React.lazy(
   () => import("./pages/components/Result/Result"),
 );
+const AlreadySubmitted = React.lazy(
+  () => import("./components/AlreadySubmitted/AlreadySubmitted"),
+);
 
 
 
@@ -43,14 +46,46 @@ function App() {
           <Routes>
             <Route path="/" element={<AuthSelection />} />
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/Selection" element={<AdminSelection />} />
-            <Route path="/candidate/login" element={<CandidateLogin />} />
+            {/* <Route path="/admin/Selection" element={<AdminSelection />} /> */}
 
+            <Route
+              path="/admin/Selection"
+              element={
+                <ProtectedRoute allowedRole="ADMIN">
+                  <AdminSelection />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/admin/dashboard"
               element={
                 <ProtectedRoute allowedRole="ADMIN">
                   <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route path="/candidate/login" element={<CandidateLogin />} />
+            <Route
+              path="/candidate/dashboard"
+              element={
+                <ProtectedRoute allowedRole="CANDIDATE">
+                  <CandidateDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/candidate/already_submitted"
+              element={
+                <AlreadySubmitted />
+              }
+            />
+
+            <Route
+              path="/candidate/assessment/:attemptId"
+              element={
+                <ProtectedRoute allowedRole="CANDIDATE">
+                  <Assessment />
                 </ProtectedRoute>
               }
             />
@@ -73,23 +108,7 @@ function App() {
               }
             />
 
-            <Route
-              path="/candidate/dashboard"
-              element={
-                <ProtectedRoute allowedRole="CANDIDATE">
-                  <CandidateDashboard />
-                </ProtectedRoute>
-              }
-            />
 
-            <Route
-              path="/candidate/assessment/:attemptId"
-              element={
-                <ProtectedRoute allowedRole="CANDIDATE">
-                  <Assessment />
-                </ProtectedRoute>
-              }
-            />
             {/* fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

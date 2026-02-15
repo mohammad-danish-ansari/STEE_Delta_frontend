@@ -270,7 +270,18 @@ const AdminDashboard: React.FC = () => {
                     <td>{candidate.name}</td>
                     <td>{candidate.email}</td>
                     <td>
-                      <span>{candidate.status}</span>
+                      <span
+                        className={`badge ${candidate.status === "Pending"
+                            ? "bg-secondary"
+                            : candidate.status === "in-progress"
+                              ? "bg-warning text-dark"
+                              : candidate.status === "submitted"
+                                ? "bg-success"
+                                : "bg-light"
+                          }`}
+                      >
+                        {candidate.status}
+                      </span>
                     </td>
                     <td>
                       {/* <button className={styles.viewBtn}>View</button> */}
@@ -290,15 +301,7 @@ const AdminDashboard: React.FC = () => {
                       >
                         Delete
                       </button>
-                      {/* <button
-                    className="btn btn-sm btn-outline-danger"
-                    onClick={async () => {
-                      await setCandidateIdForUpdate(candidate._id);
-                      setTimeout(() => setCandidateOpenModel(true), 0);
-                    }}
-                  >
-                    Delete
-                  </button> */}
+
                     </td>
                   </tr>
                 ))}

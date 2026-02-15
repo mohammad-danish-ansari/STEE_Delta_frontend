@@ -24,7 +24,7 @@ const AssessmentQuestion: React.FC = () => {
 
   const [deleteQuestion, setDeleteQuestion] = useState(false);
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
-
+const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     question: "",
     options: ["", "", "", ""],
@@ -33,8 +33,10 @@ const AssessmentQuestion: React.FC = () => {
   const navigate = useNavigate();
   // ================= getQuestion =================
   const getAllQuestions = async () => {
+    setLoading(true);
     const res = await getAdminQuestions();
     if (res?.data) setQuestions(res.data);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -140,6 +142,7 @@ const AssessmentQuestion: React.FC = () => {
     }
   };
 
+  if (loading) return <p className="text-center mt-5">Loading...</p>;
   return (
     <div className="container py-4">
       <ExitModel
