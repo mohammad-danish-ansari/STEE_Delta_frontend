@@ -1,6 +1,17 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import styles from "./ExitModel.module.scss";
-const ExitModel = ({
+
+interface ExitModelProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title?: string;
+  message?: ReactNode;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  tabIndex?: -1;
+}
+const ExitModel: React.FC<ExitModelProps> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -8,11 +19,12 @@ const ExitModel = ({
   message = "Are you sure you want to exit the application?",
   confirmLabel = "Yes",
   cancelLabel = "No",
+  tabIndex = -1,
 }) => {
   return isOpen ? (
     <div
       className={`modal fade ${isOpen ? "show d-block" : ""}`}
-      tabIndex="-1"
+      tabIndex={tabIndex}
       role="dialog"
     >
       <div className="modal-dialog modal-dialog-centered">

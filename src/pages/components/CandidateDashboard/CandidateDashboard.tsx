@@ -21,7 +21,7 @@ const CandidateDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-
+  const [showRulesModal, setShowRulesModal] = useState(false);
 
 
   const handleLogout = () => {
@@ -79,6 +79,30 @@ const CandidateDashboard: React.FC = () => {
         message="Are you sure you want to logout?"
         confirmLabel="Yes"
         cancelLabel="No"
+      />
+
+
+      <ExitModel
+        isOpen={showRulesModal}
+        onClose={() => setShowRulesModal(false)}
+        onConfirm={async () => {
+          setShowRulesModal(false);
+          await handleAttempt();
+        }}
+        title="Assessment Rules & Regulations"
+        message={
+          <>
+            <ul className="text-start ps-5">
+              <li>Total duration is limited.</li>
+              <li>Do not switch tabs or minimize window.</li>
+              <li>Do not copy/paste.</li>
+              <li>3 violations = auto submission.</li>
+              <li>Assessment runs in full screen mode.</li>
+            </ul>
+          </>
+        }
+        confirmLabel="I Agree & Start"
+        cancelLabel="Cancel"
       />
       {/* HEADER */}
       <div className={styles.header}>
@@ -148,7 +172,7 @@ const CandidateDashboard: React.FC = () => {
         <button
           className={styles.startBtn}
           disabled={loading || candidate?.hasAttempted}
-          onClick={handleAttempt}
+          onClick={() => setShowRulesModal(true)}
         >
           {loading ? (
             "Starting..."
