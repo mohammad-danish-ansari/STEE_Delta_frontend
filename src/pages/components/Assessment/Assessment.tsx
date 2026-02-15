@@ -28,6 +28,7 @@ const Assessment: React.FC = () => {
   const answersRef = useRef<{ [key: string]: string }>({});
   const isSubmittingRef = useRef(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [showWarningMessage, setShowWarningMessage] = useState<boolean>(false);
 
   // Keep answers updated
   useEffect(() => {
@@ -61,7 +62,8 @@ const Assessment: React.FC = () => {
         //  Get Timer
         const timerRes = await getTimer(attemptId);
 
-        if (timerRes?.data?.status === "submitted") {
+        if (timerRes?.data?.status === "submitted" ||
+          timerRes?.data?.status === "expired") {
           navigate("/candidate/already_submitted", { replace: true });
           return;
         }
@@ -100,12 +102,21 @@ const Assessment: React.FC = () => {
 
     intervalRef.current = setInterval(() => {
       setRemainingTime((prev) => {
+
+        //  Show warning 
+        if (prev === 60) {
+          setShowWarningMessage(true);
+          // showAlert.warning("Only 10 seconds left!");
+        }
+
+        //  Auto submit at 0
         if (prev <= 1) {
           clearInterval(intervalRef.current!);
           intervalRef.current = null;
           autoSubmit();
           return 0;
         }
+
         return prev - 1;
       });
     }, 1000);
@@ -118,6 +129,16 @@ const Assessment: React.FC = () => {
     };
   }, [timerLoaded]);
 
+  // ================= showWarningMessage Automatically remove =================
+  useEffect(() => {
+    if (showWarningMessage) {
+      const timer = setTimeout(() => {
+        setShowWarningMessage(false);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showWarningMessage])
   // ================= Handle Option =================
   const handleOptionChange = (questionId: string, value: string) => {
     setAnswers((prev) => ({
@@ -156,7 +177,7 @@ const Assessment: React.FC = () => {
       navigate("/candidate/dashboard");
     } catch (error: any) {
       showAlert.error(error?.response?.message || "Submission failed");
-      isSubmittingRef.current = false; // allow retry
+      isSubmittingRef.current = false;
     } finally {
       setLoading(false);
     }
@@ -173,6 +194,23 @@ const Assessment: React.FC = () => {
 
   return (
     <div className="container-fluid bg-light min-vh-100 py-3">
+      {showWarningMessage && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 9999,
+            width: "90%",
+            maxWidth: "600px",
+          }}
+        >
+          <div className="alert alert-warning text-center fw-bold shadow-lg">
+            Only 1 minute remaining! Assessment will auto-submit.
+          </div>
+        </div>
+      )}
       <ExitModel
         isOpen={showExitModal}
         onConfirm={async () => {
@@ -230,8 +268,8 @@ const Assessment: React.FC = () => {
               {remainingTime === 0
                 ? "Time Over"
                 : loading
-                ? "Submitting..."
-                : "Submit Assessment"}
+                  ? "Submitting..."
+                  : "Submit Assessment"}
             </button>
           </div>
         </div>
