@@ -1,3 +1,119 @@
+# Secure Assessment Portal - Frontend
+
+##  Tech Stack Used
+
+- React.js (with TypeScript)
+- React Router DOM
+- Axios
+- Bootstrap 5
+- Font Awesome
+- Context API
+- Local Storage
+- OTP Authentication Flow
+
+---
+
+##  Features
+
+###  Authentication
+- Email-based login
+- OTP verification (Email OTP via Brevo)
+- Role-based access (Admin / Candidate)
+
+###  Admin Features
+- Admin Login
+- Create Questions
+- Update Questions
+- Delete Questions
+- Create Candidate
+- Update Candidate
+- Delete Candidate
+- View Candidate Attempts
+- View Results & Scores
+
+###  Candidate Features
+- OTP-based secure login
+- Start Assessment
+- Timer-based assessment
+- Auto-submit on timer expiry
+- One attempt restriction
+- Navigation restriction (Back button disabled)
+- Warning message before auto-submit
+- Submit confirmation modal
+
+### Assessment Controls
+- Live countdown timer
+- Auto-submit at 0 seconds
+- Prevent multiple submissions
+- Prevent reattempt after submission
+
+### UI & UX
+- Sticky timer header
+- Professional dashboard layout
+- Bootstrap responsive design
+- Alert notifications
+- Loading states handling
+
+---
+
+## Security Implemented
+- OTP Verification
+- Role-based routing
+- Attempt validation
+- Timer validation
+- Submit lock mechanism
+
+---
+
+##  Live Link
+https://assessment-portal-cv6r.onrender.com/
+
+---
+
+##  Project Setup
+npm install
+npm start
+
+### Installation (Frontend)
+1 Clone the repository
+git remote add origin https://github.com/mohammad-danish-ansari/STEE_Delta_frontend/tree/master
+git pull origin master
+
+
+frontend                          # React + Tailwind frontend
+  -components                          # Reusable UI components
+    Loading.jsx                            # Loader component
+    CandidateModal.jsx                          # Modal to create 
+    ExitModal.jsx                           
+  -constants                    
+    apiConstants.js                   # API constants 
+  -pages
+    AdminLogin.jsx                  
+    AdminSelection.jsx                          
+    AuthSelection.jsx                
+    CandidateLogin.jsx 
+                       /component
+                          AdminDashboard.tsx
+                          Assessment.tsx
+                          AssessmentQuestion.tsx
+                          CandidateDashboard.tsx
+                          Result.tsx
+
+  -services
+    api.jsx                            # Base API logic
+    AllService.jsx                    #  API service (CRUD)
+  -utils
+    alerts.js                           # Toaster/alert functions
+    formValidator.js                    # Validation functions for frontend
+    ProtectedRoute.js                    
+  -README.md
+
+
+
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
