@@ -9,8 +9,8 @@ const AdminLogin: React.FC = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    email: "admin@gmail.com",
-    password: "Admin@123",
+    email: "",
+    password: "",
   });
 
   const [loading, setLoading] = useState(false);

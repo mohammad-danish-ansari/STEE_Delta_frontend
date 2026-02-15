@@ -109,7 +109,17 @@ const AdminDashboard: React.FC = () => {
       showAlert.warning(validation.message);
       return;
     }
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(candidateFormData.phone)) {
+      showAlert.warning("Phone number must be exactly 10 digits");
+      return;
+    }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(candidateFormData.email)) {
+      showAlert.warning("Please enter a valid email address");
+      return;
+    }
     setLoading(true);
 
     try {
@@ -272,12 +282,12 @@ const AdminDashboard: React.FC = () => {
                     <td>
                       <span
                         className={`badge ${candidate.status === "Pending"
-                            ? "bg-secondary"
-                            : candidate.status === "in-progress"
-                              ? "bg-warning text-dark"
-                              : candidate.status === "submitted"
-                                ? "bg-success"
-                                : "bg-light"
+                          ? "bg-secondary"
+                          : candidate.status === "in-progress"
+                            ? "bg-warning text-dark"
+                            : candidate.status === "submitted"
+                              ? "bg-success"
+                              : "bg-light"
                           }`}
                       >
                         {candidate.status}
